@@ -1,1 +1,1 @@
-from .context import WebLogMining
+from .context import cleanUpData

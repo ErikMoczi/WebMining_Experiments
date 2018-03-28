@@ -1,9 +1,8 @@
-from .FileReaderParallel import FileReaderParallel
+from .CleanUpData import CleanUpData
+
+__all__ = ['cleanUpData']
 
 
-class WebLogMining:
-    def __init__(self, input_file, output_file):
-        self.__input_file = input_file
-        self.__output_file = output_file
-
-        FileReaderParallel(self.__input_file, self.__output_file)
+def cleanUpData(input_file_name: str, output_file_name: str) -> None:
+    cleanup = CleanUpData(input_file_name, output_file_name)
+    cleanup.run()
