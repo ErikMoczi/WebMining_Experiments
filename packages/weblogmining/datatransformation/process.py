@@ -20,11 +20,13 @@ def process_base_data(line: str) -> Optional[Dict[str, str]]:
 
     elements = re.split(r'\s+', line)
 
+    date_time = re.sub('\[|\]', '', elements[2] + ' (' + elements[3] + ')')
+
     return {
         'IP': elements[0],
         'Cookie': elements[1],
-        'DTime': re.sub('\[|\]', '', elements[2]),
-        'Unixtime': str(get_unixtime(re.sub('\[|\]', '', elements[2]), get_datetime_format())),
+        'DTime': date_time,
+        'Unixtime': str(get_unixtime(date_time, get_datetime_format())),
         'RequestMethod': request_data[0],
         'URL': request_data[1],
         'Version': request_data[2],

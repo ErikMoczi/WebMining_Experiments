@@ -1,4 +1,4 @@
-import re, time, datetime
+import re, pytz, datetime, calendar
 from .helper.exception import StatusCodeException, UserDataException, RequestDataException
 
 
@@ -69,8 +69,8 @@ def check_request_data(input_data: list) -> bool:
 
 
 def get_unixtime(date_time: str, dt_format: str) -> int:
-    return time.mktime(datetime.datetime.strptime(date_time, dt_format).timetuple())
+    return calendar.timegm(datetime.datetime.strptime(date_time, dt_format).astimezone(pytz.utc).timetuple())
 
 
 def get_datetime_format() -> str:
-    return "%d/%b/%Y:%H:%M:%S"
+    return "%d/%b/%Y:%H:%M:%S (%z)"
