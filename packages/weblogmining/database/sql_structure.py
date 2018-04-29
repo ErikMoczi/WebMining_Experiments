@@ -8,20 +8,21 @@ def drop_tables() -> str:
 def create_tables() -> str:
     return (
         'CREATE TABLE IF NOT EXISTS web_mining (\n'
-        '  id             INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,\n'
-        '  user_id        INTEGER,\n'
-        '  session_id     INTEGER,\n'
-        '  ip             VARCHAR(15),\n'
-        '  cookie         VARCHAR(255),\n'
-        '  dtime          VARCHAR(28),\n'
-        '  unixtime       INTEGER                           NOT NULL,\n'
-        '  length         INTEGER,\n'
-        '  request_method VARCHAR(5),\n'
-        '  url            TEXT,\n'
-        '  http_version   VARCHAR(10),\n'
-        '  status_code    INTEGER,\n'
-        '  referrer       TEXT,\n'
-        '  agent          TEXT                              NOT NULL\n'
+        '  id                 INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,\n'
+        '  user_id            INTEGER,\n'
+        '  session_id_rlength INTEGER,\n'
+        '  session_id_sttq    INTEGER,\n'
+        '  ip                 VARCHAR(15),\n'
+        '  cookie             VARCHAR(255),\n'
+        '  dtime              VARCHAR(28),\n'
+        '  unixtime           INTEGER                           NOT NULL,\n'
+        '  length             INTEGER,\n'
+        '  request_method     VARCHAR(5),\n'
+        '  url                TEXT,\n'
+        '  http_version       VARCHAR(10),\n'
+        '  status_code        INTEGER,\n'
+        '  referrer           TEXT,\n'
+        '  agent              TEXT                              NOT NULL\n'
         ');\n'
         'CREATE INDEX web_mining_ip_agent_unixtime_index\n'
         '  ON web_mining (ip, agent, unixtime);\n'
@@ -108,9 +109,9 @@ def get_web_mining_rlength() -> str:
     )
 
 
-def update_web_mining_session_id(session_id: int, ids: list) -> str:
+def update_web_mining_session_id(session_type: str, session_id: int, ids: list) -> str:
     return (
                'UPDATE web_mining\n'
-               'SET session_id = %i\n'
+               'SET %s = %i\n'
                'WHERE id IN(%s)\n'
-           ) % (session_id, ','.join(map(str, ids)),)
+           ) % (session_type, session_id, ','.join(map(str, ids)),)

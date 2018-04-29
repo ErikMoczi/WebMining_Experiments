@@ -2,6 +2,7 @@ import pandas, math
 from .SQLiteDatabase import SQLiteDatabase
 from .sql_structure import *
 from .sql_data_helper.get_web_mining_rlength import get_length, get_user_id, get_id, get_unixtime
+from .LengthHeuristic import LengthHeuristic
 
 
 class SessionDatabase(object):
@@ -20,11 +21,8 @@ class SessionDatabase(object):
 
         self.__pos_processing(stt_seconds)
 
-    def rlength_heuristic(self, navigation_ratio: float) -> None:
+    def length_heuristic(self, length_heuristic: LengthHeuristic) -> None:
         data = self.__database.cursor.execute(get_web_mining_rlength()).fetchall()
-
-        average_event_intensity = self.__database.cursor.execute(get_average_event_intensity()).fetchone()[0]
-        c = - math.log(1 - navigation_ratio) / average_event_intensity
 
         session_id = 1
         group_ids = []
@@ -33,21 +31,21 @@ class SessionDatabase(object):
         for item in data:
             if get_user_id(item) != current_user_id:
                 if len(group_ids) > 0:
-                    self.__database.cursor.execute(update_web_mining_session_id(session_id, group_ids))
+                    self.__database.cursor.execute(update_web_mining_session_id(length_heuristic.session_type(), session_id, group_ids))
                     group_ids = []
                 current_user_id = get_user_id(item)
                 session_id = 1
 
             group_ids.append(get_id(item))
 
-            if get_length(item) is None or get_length(item) > c:
-                self.__database.cursor.execute(update_web_mining_session_id(session_id, group_ids))
+            if get_length(item) is None or get_length(item) > length_heuristic.max_allowed_time():
+                self.__database.cursor.execute(update_web_mining_session_id(length_heuristic.session_type(), session_id, group_ids))
                 session_id += 1
                 group_ids = []
 
         if len(group_ids) > 0:
             print(group_ids)
-            print("Error rlength_heuristic")
+            print("Error length_heuristic |" + str(length_heuristic))
 
         self.__database.connection.commit()
 
