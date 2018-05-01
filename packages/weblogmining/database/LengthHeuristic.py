@@ -5,13 +5,6 @@ from .sql_structure import get_average_event_intensity
 
 
 class LengthHeuristic(ABC):
-    def __init__(self, database: SQLiteDatabase):
-        self.__database = database
-
-    @property
-    def _database(self) -> SQLiteDatabase:
-        return self.__database
-
     @abstractmethod
     def max_allowed_time(self) -> float:
         pass
@@ -22,10 +15,9 @@ class LengthHeuristic(ABC):
 
 
 class RLengthHeuristic(LengthHeuristic):
-    def __init__(self, navigation_ratio: float, database: SQLiteDatabase):
-        super().__init__(database)
+    def __init__(self, navigation_ratio: float):
         self.__navigation_ratio = navigation_ratio
-        self.__average_event_intensity = self._database.cursor.execute(get_average_event_intensity()).fetchone()[0]
+        self.__average_event_intensity = SQLiteDatabase.query((get_average_event_intensity())).fetchone()[0]
 
     def max_allowed_time(self) -> float:
         return - math.log(1 - self.__navigation_ratio) / self.__average_event_intensity
@@ -35,8 +27,7 @@ class RLengthHeuristic(LengthHeuristic):
 
 
 class STTQLengthHeuristic(LengthHeuristic):
-    def __init__(self, stt_q: float, database: SQLiteDatabase):
-        super().__init__(database)
+    def __init__(self, stt_q: float):
         self.__stt_q = stt_q
 
     def max_allowed_time(self) -> float:
@@ -44,3 +35,14 @@ class STTQLengthHeuristic(LengthHeuristic):
 
     def session_type(self) -> str:
         return 'session_id_sttq'
+
+
+class SLengthLengthHeuristic(LengthHeuristic):
+    def __init__(self, estimate: float):
+        self.__estimate = estimate
+
+    def max_allowed_time(self) -> float:
+        return self.__estimate
+
+    def session_type(self) -> str:
+        return 'session_id_slength'

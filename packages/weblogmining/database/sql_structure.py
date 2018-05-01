@@ -12,6 +12,7 @@ def create_tables() -> str:
         '  user_id            INTEGER,\n'
         '  session_id_rlength INTEGER,\n'
         '  session_id_sttq    INTEGER,\n'
+        '  session_id_slength INTEGER,\n'
         '  ip                 VARCHAR(15),\n'
         '  cookie             VARCHAR(255),\n'
         '  dtime              VARCHAR(28),\n'
@@ -97,7 +98,7 @@ def get_average_event_intensity() -> str:
     )
 
 
-def get_web_mining_rlength() -> str:
+def get_web_mining_length() -> str:
     return (
         'SELECT\n'
         '  id,\n'

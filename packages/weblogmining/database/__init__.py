@@ -1,3 +1,4 @@
 from .SessionDatabase import SessionDatabase
 from .SQLiteDatabase import SQLiteDatabase
-from .LengthHeuristic import STTQLengthHeuristic, RLengthHeuristic
+from .LengthHeuristic import STTQLengthHeuristic, RLengthHeuristic, SLengthLengthHeuristic
+from .SessionCounter import SessionCounterTimeWindow, SessionCounterSittingTime
