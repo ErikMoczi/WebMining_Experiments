@@ -17,9 +17,13 @@ def create_tables() -> str:
         '  cookie             VARCHAR(255),\n'
         '  dtime              VARCHAR(28),\n'
         '  unixtime           INTEGER                           NOT NULL,\n'
+        '  hours              INTEGER,\n'
+        '  week_day           INTEGER,\n'
         '  length             INTEGER,\n'
         '  request_method     VARCHAR(5),\n'
         '  url                TEXT,\n'
+        '  category           TEXT,\n'
+        '  entry              VARCHAR(3),\n'
         '  http_version       VARCHAR(10),\n'
         '  status_code        INTEGER,\n'
         '  referrer           TEXT,\n'
@@ -116,3 +120,55 @@ def update_web_mining_session_id(session_type: str, session_id: int, ids: list) 
                'SET %s = %i\n'
                'WHERE id IN(%s)\n'
            ) % (session_type, session_id, ','.join(map(str, ids)),)
+
+
+def update_datetime_data() -> str:
+    return (
+        'UPDATE web_mining\n'
+        'SET\n'
+        'week_day = STRFTIME(\'%w\', DATETIME(unixtime, \'unixepoch\', \'localtime\')) + 1,\n'
+        'hours = STRFTIME(\'%H\', DATETIME(unixtime, \'unixepoch\', \'localtime\'))'
+    )
+
+
+def get_web_mining() -> str:
+    return (
+        'SELECT\n'
+        '  id,\n'
+        '  user_id,\n'
+        '  session_id_rlength,\n'
+        '  session_id_sttq,\n'
+        '  session_id_slength,\n'
+        '  ip,\n'
+        '  cookie,\n'
+        '  dtime,\n'
+        '  unixtime,\n'
+        '  hours,\n'
+        '  week_day,\n'
+        '  length,\n'
+        '  request_method,\n'
+        '  url,\n'
+        '  category,\n'
+        '  entry,\n'
+        '  http_version,\n'
+        '  status_code,\n'
+        '  referrer,\n'
+        '  agent\n'
+        'FROM web_mining\n'
+    )
+
+
+def update_web_mining_category(category: str, id: int) -> str:
+    return (
+               'UPDATE web_mining\n'
+               'SET category = \'%s\'\n'
+               'WHERE id = %i'
+           ) % (category, id)
+
+
+def update_web_mining_entry(entry: str, id: int) -> str:
+    return (
+               'UPDATE web_mining\n'
+               'SET entry = \'%s\'\n'
+               'WHERE id = %i'
+           ) % (entry, id)
