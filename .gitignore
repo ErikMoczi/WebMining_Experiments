@@ -29,11 +29,8 @@ wheels/
 *.egg
 
 # Vagrant
-Vagrantfile
 .vagrant
-setup.yml
 setup.retry
-roles/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
